@@ -1,0 +1,20 @@
+{
+  "name": "three-universal-fp-locomotion",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "vite --port 5554 --https",
+    "build": "rm -rf dist/index.html dist/assets && vite build",
+    "prettier": "prettier --write --no-semi --print-width 100 \"src/**/*.js\"",
+    "deploy": "cd dist && surge . && cd .."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^8.3.2",
+    "prettier": "^2.2.1",
+    "vite": "^2.1.2"
+  }
+}

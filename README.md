@@ -1,5 +1,9 @@
 # three-universal-fp-locomotion
 
+```bash
+npm i three-universal-fp-locomotion
+```
+
 ## Demo
 https://vvanghelue.github.io/three-universal-fp-locomotion/
 

@@ -1,13 +1,13 @@
 # three-universal-fp-locomotion
 
-## Install
-```bash
-npm i three-universal-fp-locomotion
-```
 
 ## Demo
 https://vvanghelue.github.io/three-universal-fp-locomotion/
 
+## Install
+```bash
+npm i three-universal-fp-locomotion
+```
 
 ## Config
 ```javascript

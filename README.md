@@ -3,6 +3,8 @@
 ## Demo
 https://vvanghelue.github.io/three-universal-fp-locomotion/
 
+
+## Config
 ```javascript
 import fpLocomotion from "three-universal-fp-locomotion"
 

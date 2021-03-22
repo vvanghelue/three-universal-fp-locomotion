@@ -1,5 +1,8 @@
 # three-universal-fp-locomotion
 
+## Demo
+https://vvanghelue.github.io/three-universal-fp-locomotion/
+
 ```javascript
 import fpLocomotion from "three-universal-fp-locomotion"
 

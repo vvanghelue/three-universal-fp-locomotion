@@ -1,5 +1,6 @@
 # three-universal-fp-locomotion
 
+A three.js first-person universal locomotion system for VR, Desktop and mobile 
 
 ## Demo
 https://vvanghelue.github.io/three-universal-fp-locomotion/
@@ -11,50 +12,50 @@ npm i three-universal-fp-locomotion
 
 ## Config
 ```javascript
-import fpLocomotion from "three-universal-fp-locomotion"
+import firstPersonLocomotion from "three-universal-fp-locomotion"
 
-// init camera, scene, etc...
+// <-- init camera, renderer, scene, etc...
 
 // create a body rig
-const body = new THREE.Group()
-body.position.set(0, 0, 0)
-body.add(camera)
+const rig = new THREE.Group()
+rig.position.set(0, 0, 0)
+rig.add(camera)
+scene.add(rig)
 
-scene.add(body)
-
-const locomotion = fpLocomotion({
-    rig: body,
+// First, you must handle a user-based click for vr and mobile
+const locomotion = firstPersonLocomotion({
+    rig: rig,
     renderer: renderer,
     camera: camera,
     collisionObjects: [ terrain, walls ],
     platforms: {
-        mouseAndKeyboard: {
-            can: ['move', 'jump', 'snap-turn'],
+        desktop: {
+            can: ['walk', 'jump'],
             input: {
-                move: { bind: ['arrows', 'wasd'] } // 'wasd'
+                move: { bind: ['arrows', 'wasd'] }, // 'wasd'
                 jump: { bind: 'space' }
             }
         },
         vr: {
             devices: ['oculus-quest'],
-            //hands: 'default',
-            can: ['move', 'climb', 'fly', 'jump'],
-            follow: 'controller-orientation', // headset-orientation
+            can: ['walk', 'run', 'snap-turn', 'climb', 'fly', 'jump'],
+            snapTurnStep: Math.PI/4,
+            directionFollow: 'controller-orientation', // headset-orientation
             input: {
                 jump: { bind: 'A' }
             }
         },
         mobile: {
             forceOrientation: 'landscape', // portrait
-            can: ['move', 'jump']
+            can: ['walk', 'jump']
         }
     },
     responsiveLogic: {
-        isVR() {
+        detectVR() {
             return window.navigator.userAgent.includes('Oculus Quest')
         }
     },
-    worldOptions: {
+    world: {
         gravity: 9.81,
         speedFactor: 1.2
     },
@@ -68,14 +69,13 @@ renderer.setAnimationLoop(() => {
     locomotion.update(deltaTime)
 
     // render my app
-    // doStuff(deltaTime)
     // render() 
 })
 ```
 
 # display tutorial
 ```javascript
-locomotion.context // vr, mouse-and-keyboard, mobile
+locomotion.context // vr, desktop, mobile
 locomotion.on('context-change', () => {
     //
 })
@@ -83,7 +83,7 @@ locomotion.on('context-change', () => {
 
 # display tutorial
 ```javascript
-locomotion.displayTutorial()
+locomotion.tutorial.display('gl') // 'html' => only mobile and desktop
 ```
 
 # events

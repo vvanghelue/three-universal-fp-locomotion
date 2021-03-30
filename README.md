@@ -27,38 +27,64 @@ const locomotion = firstPersonLocomotion({
     rig: rig,
     renderer: renderer,
     camera: camera,
-    collisionObjects: [ terrain, walls ],
+    collisionObject: myCollisionObject,
     platforms: {
         desktop: {
-            can: ['walk', 'jump'],
-            input: {
-                move: { bind: ['arrows', 'wasd'] }, // 'wasd'
-                jump: { bind: 'space' }
-            }
+            enabled: true,
+            features: {
+                walk: {
+                    enabled: true,
+                    bind: ["arrows", "wasd"],
+                },
+                jump: {
+                    enabled: true,
+                    bind: "space",
+                },
+            },
         },
         vr: {
-            devices: ['oculus-quest'],
-            can: ['walk', 'run', 'snap-turn', 'climb', 'fly', 'jump'],
-            snapTurnStep: Math.PI/4,
-            directionFollow: 'controller-orientation', // headset-orientation
-            input: {
-                jump: { bind: 'A' }
-            }
+            enabled: true,
+            devices: ["oculus-quest", "valve-index"],
+            features: {
+                walk: {
+                    enabled: true,
+                    follow: "controller-orientation", // headset-orientation
+                },
+                run: {
+                    enabled: true,
+                },
+                "snap-turn": {
+                    enabled: true,
+                    step: Math.PI / 8,
+                },
+                jump: {
+                    enabled: true,
+                    bind: ["oculus-quest-button-A", "valve-index-A-button"], // (device) => device === "oculus-quest" ? "A" : null
+                },
+                climb: {
+                    enabled: true,
+                },
+                fly: {
+                    enabled: true,
+                },
+            },
         },
         mobile: {
-            forceOrientation: 'landscape', // portrait
-            can: ['walk', 'jump']
-        }
-    },
-    responsiveLogic: {
-        detectVR() {
-            return window.navigator.userAgent.includes('Oculus Quest')
-        }
+            enabled: true,
+            forceOrientation: "landscape", // portrait
+            features: {
+                walk: {
+                    enabled: true,
+                },
+                jump: {
+                    enabled: true,
+                },
+            },
+        },
     },
     world: {
         gravity: 9.81,
-        speedFactor: 1.2
-    },
+    }
 })
 
 

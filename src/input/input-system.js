@@ -6,6 +6,11 @@ import {
   getXRCamera,
 } from "./xr/xr-input"
 
+import {
+  initMobileInput,
+  getMobileJoysticksValue
+} from "./mobile/mobile-input"
+
 let keyboardState = {}
 
 export function initInputSystem({ renderer }) {
@@ -26,11 +31,16 @@ export function initInputSystem({ renderer }) {
 }
 
 export const inputSystem = (window.inputSystem = {
+  // vr
   initXRSession,
   getXRControllers,
   getXRGamepads,
   getXRSession,
   getXRCamera,
+  // mobile
+  initMobileInput,
+  getMobileJoysticksValue,
+  // desktop
   getKeyboardState() {
     return keyboardState
   },

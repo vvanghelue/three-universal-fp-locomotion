@@ -9,19 +9,19 @@ export default function ({ platform, overlay, camera, rig }) {
 
   let walkingSystem, snapTurnSystem
 
-  if (platform.features["walk"].enabled) {
+  if (platform.isEnabled("walk")) {
     walkingSystem = initWalkingSystem({ platform, camera, rig })
   }
-  if (platform.features["snap-turn"].enabled) {
+  if (platform.isEnabled("snap-turn")) {
     snapTurnSystem = initSnapTurnSystem({ rig })
   }
 
   return {
     update(deltaTime) {
-      if (platform.features["walk"].enabled) {
+      if (platform.isEnabled("walk")) {
         walkingSystem.update(deltaTime)
       }
-      if (platform.features["snap-turn"].enabled) {
+      if (platform.isEnabled("snap-turn")) {
         snapTurnSystem.update(deltaTime)
       }
       // if (platform.features.climb.enabled === true) {

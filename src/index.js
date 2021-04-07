@@ -12,8 +12,8 @@ if (window) {
   ;(async () => {
     platformType = "desktop"
     const agent = window.navigator.userAgent
-    // if (agent.includes("Quest")) {
-    if (await navigator.xr.isSessionSupported("immersive-vr")) {
+    if (agent.includes("Quest")) {
+    // if (await navigator.xr.isSessionSupported("immersive-vr")) {
       platformType = "vr"
     } else {
       if (window.document) {
@@ -97,8 +97,9 @@ export default async function (options) {
     )
   }
 
-  overlay = initUiOverlay()
-  overlay.getOverlay().innerHTML = "<button>dsqdsq</button>"
+  initUiOverlay()
+  console.log('uiOverlay', uiOverlay)
+  // uiOverlay.innerHTML = "<button>dsqdsq</button>"
 
   // prevent object traverse in deep merge
   const collisionObject = options.collisionObject
@@ -122,6 +123,9 @@ export default async function (options) {
 
   const platform = options.platforms[platformType]
   platform.type = platformType
+  platform.isEnabled = function(featureName) {
+    return platform.features[featureName] && platform.features[featureName].enabled
+  }
 
   initInputSystem({ renderer })
 
@@ -129,6 +133,11 @@ export default async function (options) {
     console.log("init vr session")
     await inputSystem.initXRSession({ renderer, scene, rig, camera })
     console.log("VR session started")
+  }
+
+  if (platform.type === "mobile") {
+    // alert()
+    await inputSystem.initMobileInput()
   }
 
   collisionSystem = initCollisions({ collisionObject })

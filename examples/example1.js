@@ -30,9 +30,9 @@ window.openExample1 = () => {
     const loader = new GLTFLoader().setPath('./')
     loader.load('demo-scene/demo-scene.glb', function (gltf) {
         console.log('demo scene loaded')
-        console.log(gltf.scene)
+        // console.log(gltf.scene)
 
-        addStartButton(function onStart() {
+        addStartButton( async function onStart() {
 
             //alert(locomotion.getContext())
             // scene
@@ -71,9 +71,22 @@ window.openExample1 = () => {
             const directionalLight = new THREE.DirectionalLight(0xff0022, 0.5)
             directionalLight.position.set(-5, 25, -5)
 
+            // create body rig
+            const rig = new THREE.Group()
+            rig.position.set(0, 0, 0)
+            scene.add(rig)
+            rig.add(camera)
+
+            // add scene
+            scene.add(gltf.scene)
+
             // init locomotion
-            const locomotion = fpLcomotion({
-                collisionObject: gltf.scene, // collision meshes
+            const locomotion = await fpLcomotion({
+                collisionObject: gltf.scene, // collision meshes,
+                renderer,
+                scene,
+                rig,
+                camera
             })
 
             const clock = new THREE.Clock()
@@ -83,6 +96,9 @@ window.openExample1 = () => {
                 locomotion.update(deltaTime)
                 renderer.render(scene, camera)
             })
+
+            window.renderer1 = renderer
+            window.THREE = THREE
                 
         }) //onStart
     })

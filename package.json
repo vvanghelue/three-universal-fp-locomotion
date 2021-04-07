@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
+    "delay": "^5.0.0",
     "three": "^0.126.1"
   }
 }

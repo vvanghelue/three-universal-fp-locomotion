@@ -1,28 +1,32 @@
 import * as THREE from "three"
 import initCollisions from "./collisions/collisions"
-import initMovements from "./locomotion/_locomotion"
+import initLocomotion from "./locomotion/_locomotion"
 import deepMerge from "deepmerge"
 import initHtmlOverlay from "./overlay/html-overlay"
+import { initInputSystem, inputSystem } from "./input/input-system"
 
 // detect context before loading
 let platformType // 'vr', 'desktop', 'mobile'
 
 if (window) {
-  platformType = "desktop"
-  if (window.document) {
-    function detectMobile() {
-      platformType = "mobile"
-      window.document.removeEventListener("touchstart", detectMobile)
+  ;(async () => {
+    platformType = "desktop"
+    const agent = window.navigator.userAgent
+    // if (agent.includes("Quest")) {
+    if (await navigator.xr.isSessionSupported("immersive-vr")) {
+      platformType = "vr"
+    } else {
+      if (window.document) {
+        function detectMobile() {
+          platformType = "mobile"
+          window.document.removeEventListener("touchstart", detectMobile)
+        }
+        window.document.addEventListener("touchstart", detectMobile)
+      }
     }
-    window.document.addEventListener("touchstart", detectMobile)
-  }
-  const agent = window.navigator.userAgent
-  if (agent.includes("Quest")) {
-    platformType = "vr"
-  }
+    //alert(platformType)
+  })()
 }
-
-function initVRSession() {}
 
 const defaultOptions = {
   platforms: {
@@ -84,7 +88,7 @@ const defaultOptions = {
   },
 }
 
-export default function (options) {
+export default async function (options) {
   let collisionSystem, locomotionSystem, overlay
 
   if (!platformType) {
@@ -96,22 +100,48 @@ export default function (options) {
   overlay = initHtmlOverlay()
   overlay.getOverlay().innerHTML = "<button>dsqdsq</button>"
 
+  // prevent object traverse in deep merge
   const collisionObject = options.collisionObject
   options.collisionObject = undefined
+  // prevent object traverse in deep merge
+  const rig = options.rig
+  options.rig = undefined
+  // prevent object traverse in deep merge
+  const camera = options.camera
+  options.camera = undefined
+  // prevent object traverse in deep merge
+  const renderer = options.renderer
+  options.renderer = undefined
+  // prevent object traverse in deep merge
+  const scene = options.scene
+  options.scene = undefined
 
   options = deepMerge(defaultOptions, options)
 
   //   console.log(deepMerge({foo: 'bar', mdr: 'dssq'}, { mdr: 'iiiii' }))
 
-  collisionSystem = initCollisions({ collisionObject })
-  locomotionSystem = initMovements({ platformType, options, overlay })
+  const platform = options.platforms[platformType]
+  platform.type = platformType
+  
+  initInputSystem({ renderer })
 
+  if (platform.type === "vr") {
+    console.log("init vr session")
+    await inputSystem.initXRSession({ renderer, scene, rig })
+    console.log("VR session started")
+  }
+
+  collisionSystem = initCollisions({ collisionObject })
+  locomotionSystem = initLocomotion({ platform, overlay, camera, rig })
+
+  // await new Promise(r => setTimeout(r, 4000))
   return {
-    update(dt) {
-      locomotionSystem.update(dt)
-      collisionSystem.update(dt)
+    update(deltaTime) {
+      // console.log(inputSystem.getKeyboardState())
+      locomotionSystem.update(deltaTime)
+      collisionSystem.update(deltaTime)
     },
     on() {},
-    getPlatformType: () => platformType,
+    getPlatform: () => platform,
   }
 }

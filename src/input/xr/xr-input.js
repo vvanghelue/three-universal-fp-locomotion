@@ -1,7 +1,9 @@
 import * as THREE from "three"
 import { inputSystem } from "../input-system"
 import waitUntil from "../../_helpers/wait-until"
+import { Camera } from "three"
 
+let originalCamera
 let XRSession
 let controllers = {}
 
@@ -11,6 +13,10 @@ export function getXRControllers() {
 
 export function getXRSession() {
   return XRSession
+}
+
+export function getXRCamera() {
+  return renderer.xr.getCamera(originalCamera)
 }
 
 async function buildController(data) {
@@ -45,7 +51,9 @@ export function getXRGamepadButtonValue(hand, index) {
   return getXRGamepads() && getXRGamepads()[hand].gamepad.buttons.map((i) => i.value)[index]
 }
 
-export async function initXRSession({ renderer, scene, rig }) {
+export async function initXRSession({ renderer, scene, rig, camera }) {
+  originalCamera = camera
+
   renderer.xr.enabled = true
   const sessionOptions = { optionalFeatures: ["local-floor", "bounded-floor", "hand-tracking"] }
   XRSession = await navigator.xr.requestSession("immersive-vr", sessionOptions)
@@ -78,7 +86,7 @@ export async function initXRSession({ renderer, scene, rig }) {
     controller.addEventListener("disconnected", function () {
       this.remove(this.children[0])
     })
-    scene.add(controller)
+    rig.add(controller)
   }
 
   return await waitUntil(

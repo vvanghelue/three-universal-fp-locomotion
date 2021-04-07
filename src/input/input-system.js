@@ -1,4 +1,10 @@
-import { initXRSession, getXRSession, getXRControllers, getXRGamepads } from "./xr/xr-input"
+import {
+  initXRSession,
+  getXRSession,
+  getXRControllers,
+  getXRGamepads,
+  getXRCamera,
+} from "./xr/xr-input"
 
 let keyboardState = {}
 
@@ -24,6 +30,7 @@ export const inputSystem = (window.inputSystem = {
   getXRControllers,
   getXRGamepads,
   getXRSession,
+  getXRCamera,
   getKeyboardState() {
     return keyboardState
   },

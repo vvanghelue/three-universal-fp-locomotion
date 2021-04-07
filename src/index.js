@@ -2,7 +2,7 @@ import * as THREE from "three"
 import initCollisions from "./collisions/collisions"
 import initLocomotion from "./locomotion/_locomotion"
 import deepMerge from "deepmerge"
-import initHtmlOverlay from "./overlay/html-overlay"
+import { initUiOverlay, uiOverlay } from "./ui-overlay/ui-overlay"
 import { initInputSystem, inputSystem } from "./input/input-system"
 
 // detect context before loading
@@ -97,7 +97,7 @@ export default async function (options) {
     )
   }
 
-  overlay = initHtmlOverlay()
+  overlay = initUiOverlay()
   overlay.getOverlay().innerHTML = "<button>dsqdsq</button>"
 
   // prevent object traverse in deep merge
@@ -122,12 +122,12 @@ export default async function (options) {
 
   const platform = options.platforms[platformType]
   platform.type = platformType
-  
+
   initInputSystem({ renderer })
 
   if (platform.type === "vr") {
     console.log("init vr session")
-    await inputSystem.initXRSession({ renderer, scene, rig })
+    await inputSystem.initXRSession({ renderer, scene, rig, camera })
     console.log("VR session started")
   }
 

@@ -13,7 +13,7 @@ if (window) {
     platformType = "desktop"
     const agent = window.navigator.userAgent
     if (agent.includes("Quest")) {
-    // if (await navigator.xr.isSessionSupported("immersive-vr")) {
+      // if (await navigator.xr.isSessionSupported("immersive-vr")) {
       platformType = "vr"
     } else {
       if (window.document) {
@@ -98,7 +98,7 @@ export default async function (options) {
   }
 
   initUiOverlay()
-  console.log('uiOverlay', uiOverlay)
+  console.log("uiOverlay", uiOverlay)
   // uiOverlay.innerHTML = "<button>dsqdsq</button>"
 
   // prevent object traverse in deep merge
@@ -123,7 +123,7 @@ export default async function (options) {
 
   const platform = options.platforms[platformType]
   platform.type = platformType
-  platform.isEnabled = function(featureName) {
+  platform.isEnabled = function (featureName) {
     return platform.features[featureName] && platform.features[featureName].enabled
   }
 

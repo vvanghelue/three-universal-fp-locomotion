@@ -1,92 +1,91 @@
 let htmlContainer
 const virtualJoysticks = {
-    left: null,
-    right: null
+  left: null,
+  right: null,
 }
 
 const screenSize = {
-    x: 0,
-    y: 0
+  x: 0,
+  y: 0,
 }
 
 function createJoystick(side) {
-    const self = {
-        active: false,
-        touchStartPosition: {
-            x: 0,
-            y: 0
-        },
-        vector: {
-            x: 0,
-            y: 0
-        }
-    }
-    const element = document.createElement('div')
-    element.classList.add('joystick-zone')
-    element.innerHTML = `
+  const self = {
+    active: false,
+    touchStartPosition: {
+      x: 0,
+      y: 0,
+    },
+    vector: {
+      x: 0,
+      y: 0,
+    },
+  }
+  const element = document.createElement("div")
+  element.classList.add("joystick-zone")
+  element.innerHTML = `
         <div class="joystick">
         </div>
         <div class="inner-circle"></div>
     `
-    const joystickElement = element.querySelector('.joystick')
-    const innerCircleElement = element.querySelector('.inner-circle')
+  const joystickElement = element.querySelector(".joystick")
+  const innerCircleElement = element.querySelector(".inner-circle")
 
-    if (side === 'left') {
-        element.style.left = '15px'
-        joystickElement.style.left = '20vw'
-        innerCircleElement.style.left = '20vw'
-    }
-    if (side === 'right') {
-        element.style.right = '15px'
-        joystickElement.style.right = '20vw'
-        innerCircleElement.style.right = '20vw'
-    }
+  if (side === "left") {
+    element.style.left = "15px"
+    joystickElement.style.left = "20vw"
+    innerCircleElement.style.left = "20vw"
+  }
+  if (side === "right") {
+    element.style.right = "15px"
+    joystickElement.style.right = "20vw"
+    innerCircleElement.style.right = "20vw"
+  }
 
-    joystickElement.style.bottom = '20vh'
-    innerCircleElement.style.bottom = '20vh'
+  joystickElement.style.bottom = "20vh"
+  innerCircleElement.style.bottom = "20vh"
 
-    return {
-        ...self,
-        element,
-        joystickElement,
-        innerCircleElement
-    }
+  return {
+    ...self,
+    element,
+    joystickElement,
+    innerCircleElement,
+  }
 }
 
 export async function initMobileInput() {
-    document.documentElement.requestFullscreen();
+  document.documentElement.requestFullscreen()
 
-    htmlContainer = document.createElement('div')
-    htmlContainer.classList.add('virtual-joysticks')
-    document.body.appendChild(htmlContainer)
-    
-    virtualJoysticks.left = createJoystick('left')
-    htmlContainer.appendChild(virtualJoysticks.left.element)
+  htmlContainer = document.createElement("div")
+  htmlContainer.classList.add("virtual-joysticks")
+  document.body.appendChild(htmlContainer)
 
-    virtualJoysticks.right = createJoystick('right')
-    htmlContainer.appendChild(virtualJoysticks.right.element)
+  virtualJoysticks.left = createJoystick("left")
+  htmlContainer.appendChild(virtualJoysticks.left.element)
 
-    document.body.addEventListener('touchstart', (event) => {
-        // console.log('touchstart', event)
-        if (true) {
-            // console.log(event.clientX, event.clientY, screen.width, screen.height)
-        }
-    })
-    document.body.addEventListener('touchmove', (event) => {
-        console.log('touchmove', event.targetTouches)
-    })
-    document.body.addEventListener('touchend', (event) => {
-        // console.log('touchstart', event)
-    })
+  virtualJoysticks.right = createJoystick("right")
+  htmlContainer.appendChild(virtualJoysticks.right.element)
+
+  document.body.addEventListener("touchstart", (event) => {
+    // console.log('touchstart', event)
+    if (true) {
+      // console.log(event.clientX, event.clientY, screen.width, screen.height)
+    }
+  })
+  document.body.addEventListener("touchmove", (event) => {
+    console.log("touchmove", event.targetTouches)
+  })
+  document.body.addEventListener("touchend", (event) => {
+    // console.log('touchstart', event)
+  })
 }
 
 export function getMobileJoysticksValue() {
-    return {
-        left: virtualJoysticks.left.vector,
-        right: virtualJoysticks.right.vector
-    }
+  return {
+    left: virtualJoysticks.left.vector,
+    right: virtualJoysticks.right.vector,
+  }
 }
-
 
 const style = document.createElement("style")
 style.innerHTML = `

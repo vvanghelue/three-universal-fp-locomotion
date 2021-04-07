@@ -6,10 +6,7 @@ import {
   getXRCamera,
 } from "./xr/xr-input"
 
-import {
-  initMobileInput,
-  getMobileJoysticksValue
-} from "./mobile/mobile-input"
+import { initMobileInput, getMobileJoysticksValue } from "./mobile/mobile-input"
 
 let keyboardState = {}
 

@@ -36,6 +36,7 @@ const defaultOptions = {
         walk: {
           enabled: true,
           bind: ["arrows", "wasd"],
+          speedFactor: 1,
         },
         jump: {
           enabled: true,
@@ -49,7 +50,8 @@ const defaultOptions = {
       features: {
         walk: {
           enabled: true,
-          follow: "controller-orientation", // headset-orientation
+          follow: "controller-orientation", // headset-orientation,
+          speedFactor: 1,
         },
         run: {
           enabled: true,
@@ -76,6 +78,7 @@ const defaultOptions = {
       features: {
         walk: {
           enabled: true,
+          speedFactor: 1,
         },
         jump: {
           enabled: true,
@@ -113,9 +116,6 @@ export default async function (options) {
   // prevent object traverse in deep merge
   const renderer = options.renderer
   options.renderer = undefined
-  // prevent object traverse in deep merge
-  const scene = options.scene
-  options.scene = undefined
 
   options = deepMerge(defaultOptions, options)
 
@@ -131,7 +131,7 @@ export default async function (options) {
 
   if (platform.type === "vr") {
     console.log("init vr session")
-    await inputSystem.initXRSession({ renderer, scene, rig, camera })
+    await inputSystem.initXRSession({ renderer, rig, camera })
     console.log("VR session started")
   }
 
@@ -141,8 +141,8 @@ export default async function (options) {
     //inputSystem.getMobileJoysticksValue()
   }
 
-  collisionSystem = initCollisions({ collisionObject })
-  locomotionSystem = initLocomotion({ platform, overlay, camera, rig })
+  collisionSystem = initCollisions({ platform, collisionObject, rig })
+  locomotionSystem = initLocomotion({ platform, overlay, camera, rig, collisionSystem })
 
   // await new Promise(r => setTimeout(r, 4000))
   return {

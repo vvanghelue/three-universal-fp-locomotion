@@ -65,14 +65,23 @@ window.openExample1 = () => {
             document.body.appendChild(renderer.domElement)
 
             // lighting
-            const ambientLight = new THREE.AmbientLight(0x5555ff)
-            ambientLight.intensity = 0.5
-            scene.add(ambientLight)
-            const directionalLight = new THREE.DirectionalLight(0xff0022, 0.5)
-            directionalLight.position.set(-5, 25, -5)
+//            const ambientLight = new THREE.AmbientLight(0x5555ff)
+ //           ambientLight.intensity = 0.5
+  //          scene.add(ambientLight)
+
+            const light = new THREE.HemisphereLight( 0x4444ff, 0x111111, 1 );
+            scene.add( light );
+
+            const directionalLight = new THREE.DirectionalLight(0xff4444, 1)
+            directionalLight.position.set(-15, 25, -5)
+            scene.add( directionalLight );
+
+            // fog
+            scene.fog = new THREE.Fog(0xabcdef, 0, 190)
+            // scene.fog = new THREE.FogExp2(0xffffff, .014)
 
             // create body rig
-            const rig = new THREE.Group()
+            const rig = window.debugRig = new THREE.Group()
             rig.position.set(0, 0, 0)
             scene.add(rig)
             rig.add(camera)
@@ -84,17 +93,19 @@ window.openExample1 = () => {
             const locomotion = await fpLcomotion({
                 collisionObject: gltf.scene, // collision meshes,
                 renderer,
-                scene,
+                camera,
                 rig,
-                camera
             })
-
+            
             const clock = new THREE.Clock()
             renderer.setAnimationLoop(function () {
+            // setInterval(() => {
                 //console.log(clock)
                 const deltaTime = clock.getDelta() // in seconds
+                window.deltaTime = deltaTime
                 locomotion.update(deltaTime)
                 renderer.render(scene, camera)
+            //}, 1000/5)
             })
 
             window.renderer1 = renderer

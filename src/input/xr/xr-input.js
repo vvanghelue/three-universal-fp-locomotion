@@ -51,7 +51,7 @@ export function getXRGamepadButtonValue(hand, index) {
   return getXRGamepads() && getXRGamepads()[hand].gamepad.buttons.map((i) => i.value)[index]
 }
 
-export async function initXRSession({ renderer, scene, rig, camera }) {
+export async function initXRSession({ renderer, rig, camera }) {
   originalCamera = camera
 
   renderer.xr.enabled = true

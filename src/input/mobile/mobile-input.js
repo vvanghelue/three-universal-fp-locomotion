@@ -50,16 +50,16 @@ function createJoystick(side) {
     zone.classList.add("animate-joystick-start-position")
     if (side === "left") {
       zone.style.left = "15px"
-      joystickElement.style.top = "70vh"
+      joystickElement.style.top = "75vh"
       joystickElement.style.left = "20vw"
-      innerCircleElement.style.top = "70vh"
+      innerCircleElement.style.top = "75vh"
       innerCircleElement.style.left = "20vw"
     }
     if (side === "right") {
       zone.style.right = "15px"
-      joystickElement.style.top = "70vh"
+      joystickElement.style.top = "75vh"
       joystickElement.style.left = "80vw"
-      innerCircleElement.style.top = "70vh"
+      innerCircleElement.style.top = "75vh"
       innerCircleElement.style.left = "80vw"
     }
     await delay(BACK_TO_POSITION_ANIMATION_DURATION)
@@ -121,6 +121,7 @@ function createJoystick(side) {
     if (self.active) {
       return
     }
+    // console.log(event.targetTouches[0].identifier)
     self.active = true
     self.touchIdentifier = event.targetTouches[0].identifier
     self.touchStartPosition.x = event.targetTouches[0].pageX
@@ -132,9 +133,19 @@ function createJoystick(side) {
     // console.log("touchmove", event.changedTouches.item(self.touchIdentifier))
     // console.log("touchmove", event.touches.length, event.changedTouches.length, event.targetTouches.length)
     if (self.active) {
+      let touch
+      for (let i = 0; i < event.touches.length; i++) {
+        if (event.touches[i].identifier === self.touchIdentifier) {
+          touch = event.touches[i]
+          break
+        }
+      }
+      if (!touch) {
+        return
+      }
       const point = {
-        x: event.touches.item(self.touchIdentifier).pageX,
-        y: event.touches.item(self.touchIdentifier).pageY,
+        x: touch.pageX,
+        y: touch.pageY,
       }
       const intersection = intersectLineCircle({
         point,
@@ -145,8 +156,8 @@ function createJoystick(side) {
         self.innerCirclePosition.x = intersection.x
         self.innerCirclePosition.y = intersection.y
       } else {
-        self.innerCirclePosition.x = event.targetTouches[0].pageX
-        self.innerCirclePosition.y = event.targetTouches[0].pageY
+        self.innerCirclePosition.x = point.x
+        self.innerCirclePosition.y = point.y
       }
 
       self.vector = getVectorValue({
@@ -175,7 +186,7 @@ function createJoystick(side) {
 
 export async function initMobileInput() {
   if (!location.href.includes("localhost")) {
-    const userAgent = window.navigator.userAgent;
+    const userAgent = window.navigator.userAgent
     if (!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) {
       document.documentElement.requestFullscreen()
     }
@@ -220,11 +231,11 @@ style.innerHTML = `
         bottom: 0;
     }
     .virtual-joysticks .joystick-zone {
-        __background: rgba(0, 255, 0, .3);
+        background: rgba(0, 255, 0, .3);
         position: fixed;
-        bottom: 15px;
-        width: calc(50vw - 30px);
-        height: calc(60vh - 30px);
+        bottom: 10px;
+        width: calc(35vw - 30px);
+        height: calc(55vh - 30px);
     }
     .virtual-joysticks .joystick {
         width: 1px;

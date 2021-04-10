@@ -1,12 +1,10 @@
 import { inputSystem } from "../input/input-system"
 import * as THREE from "three"
 
-const SPEED = 4
-const MOBILE_SPEEDUP_FACTOR = 4
+const SPEED = 5
+const INERTIA_FACTOR = 0.7
 
-export default function ({ platform, camera, rig }) {
-  let playerVelocity = new THREE.Vector3(0, 0, 0)
-
+export default function ({ platform, camera, rig, rigVelocity, collisionSystem }) {
   const desktopKeyboardState = {}
   if (platform.type == "desktop" || platform.type == "mobile") {
     camera.rotation.order = "YXZ"
@@ -41,31 +39,43 @@ export default function ({ platform, camera, rig }) {
     if (platform.type == "vr") {
       inputSystem.getXRControllers().left.mesh.parent.getWorldDirection(direction)
       direction.multiplyScalar(-1)
+      direction.y = 0
     }
+    direction.normalize()
     return direction
   }
 
   return {
     update(deltaTime) {
+      if (platform.type == "mobile") {
+        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
+        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
+      }
+
+      if (!collisionSystem.isRigOnFloor()) {
+        return
+      }
+
       let forwardValue = 0
       let sideValue = 0
 
       if (platform.type == "desktop") {
         const keys = inputSystem.getKeyboardState()
-        const forward = keys["KeyW"] ? 1 : 0
-        const backward = keys["KeyS"] ? -1 : 0
-        const right = keys["KeyD"] ? 1 : 0
-        const left = keys["KeyA"] ? -1 : 0
+        const forward = keys["KeyW"] || keys["ArrowUp"] ? 1 : 0
+        const backward = keys["KeyS"] || keys["ArrowDown"] ? -1 : 0
+        const right = keys["KeyD"] || keys["ArrowRight"] ? 1 : 0
+        const left = keys["KeyA"] || keys["ArrowLeft"] ? -1 : 0
         forwardValue = forward + backward
         sideValue = left + right
+        sideValue = sideValue / 2
       }
 
       if (platform.type == "mobile") {
-        forwardValue = inputSystem.getMobileJoysticksValue().left.y * MOBILE_SPEEDUP_FACTOR
-        sideValue = inputSystem.getMobileJoysticksValue().left.x * MOBILE_SPEEDUP_FACTOR
+        forwardValue = inputSystem.getMobileJoysticksValue().left.y * 1.2
+        sideValue = inputSystem.getMobileJoysticksValue().left.x / 2
 
-        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 40
-        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 40
+        // camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
+        // camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
       }
 
       if (platform.type == "vr") {
@@ -77,12 +87,15 @@ export default function ({ platform, camera, rig }) {
       deltaPosition
         .add(getForwardVector(camera).multiplyScalar(forwardValue))
         .add(getSideVector(camera).multiplyScalar(sideValue))
-        //.normalize()
-        .multiplyScalar(SPEED * deltaTime)
-      playerVelocity.add(deltaPosition)
-      const damping = Math.exp(-30 * deltaTime) - 1
-      playerVelocity.addScaledVector(playerVelocity, damping)
-      rig.position.add(playerVelocity)
+        // .normalize()
+        .multiplyScalar(SPEED * platform.features.walk.speedFactor)
+      rigVelocity.add(deltaPosition)
+
+      // rigVelocity.copy(deltaPosition)
+
+      // const damping = Math.exp(-1.0001) - 1
+      // rigVelocity.addScaledVector(rigVelocity, damping)
+      rigVelocity.multiplyScalar(INERTIA_FACTOR)
     },
   }
 }

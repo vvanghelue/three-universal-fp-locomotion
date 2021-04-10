@@ -2,6 +2,7 @@ import { inputSystem } from "../input/input-system"
 import * as THREE from "three"
 
 const SPEED = 4
+const MOBILE_SPEEDUP_FACTOR = 4
 
 export default function ({ platform, camera, rig }) {
   let playerVelocity = new THREE.Vector3(0, 0, 0)
@@ -60,11 +61,11 @@ export default function ({ platform, camera, rig }) {
       }
 
       if (platform.type == "mobile") {
-        forwardValue = inputSystem.getMobileJoysticksValue().left.y
-        sideValue = inputSystem.getMobileJoysticksValue().left.x
+        forwardValue = inputSystem.getMobileJoysticksValue().left.y * MOBILE_SPEEDUP_FACTOR
+        sideValue = inputSystem.getMobileJoysticksValue().left.x * MOBILE_SPEEDUP_FACTOR
 
-        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
-        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
+        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 40
+        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 40
       }
 
       if (platform.type == "vr") {
@@ -76,7 +77,7 @@ export default function ({ platform, camera, rig }) {
       deltaPosition
         .add(getForwardVector(camera).multiplyScalar(forwardValue))
         .add(getSideVector(camera).multiplyScalar(sideValue))
-        .normalize()
+        //.normalize()
         .multiplyScalar(SPEED * deltaTime)
       playerVelocity.add(deltaPosition)
       const damping = Math.exp(-30 * deltaTime) - 1

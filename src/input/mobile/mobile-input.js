@@ -4,7 +4,7 @@ import deepmerge from "deepmerge"
 import { MaxEquation } from "three"
 
 const BACK_TO_POSITION_ANIMATION_DURATION = 200
-const JOYSTICK_RADIUS = 60
+const JOYSTICK_RADIUS = 80
 
 let htmlContainer
 const virtualJoysticks = {
@@ -50,16 +50,16 @@ function createJoystick(side) {
     zone.classList.add("animate-joystick-start-position")
     if (side === "left") {
       zone.style.left = "15px"
-      joystickElement.style.top = "80vh"
+      joystickElement.style.top = "70vh"
       joystickElement.style.left = "20vw"
-      innerCircleElement.style.top = "80vh"
+      innerCircleElement.style.top = "70vh"
       innerCircleElement.style.left = "20vw"
     }
     if (side === "right") {
       zone.style.right = "15px"
-      joystickElement.style.top = "80vh"
+      joystickElement.style.top = "70vh"
       joystickElement.style.left = "80vw"
-      innerCircleElement.style.top = "80vh"
+      innerCircleElement.style.top = "70vh"
       innerCircleElement.style.left = "80vw"
     }
     await delay(BACK_TO_POSITION_ANIMATION_DURATION)
@@ -217,7 +217,7 @@ style.innerHTML = `
         bottom: 0;
     }
     .virtual-joysticks .joystick-zone {
-        background: rgba(0, 255, 0, .3);
+        __background: rgba(0, 255, 0, .3);
         position: fixed;
         bottom: 15px;
         width: calc(50vw - 30px);
@@ -228,7 +228,7 @@ style.innerHTML = `
         height: 1px;
         position: fixed;
         transition: opacity 500ms ease;
-        opacity: .5;
+        opacity: .3;
     }
     .virtual-joysticks .joystick:after {
         content: "";

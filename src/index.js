@@ -97,8 +97,8 @@ export default async function (options) {
     )
   }
 
-  initUiOverlay()
-  console.log("uiOverlay", uiOverlay)
+  // initUiOverlay()
+  // console.log("uiOverlay", uiOverlay)
   // uiOverlay.innerHTML = "<button>dsqdsq</button>"
 
   // prevent object traverse in deep merge
@@ -138,6 +138,7 @@ export default async function (options) {
   if (platform.type === "mobile") {
     // alert()
     await inputSystem.initMobileInput()
+    //inputSystem.getMobileJoysticksValue()
   }
 
   collisionSystem = initCollisions({ collisionObject })

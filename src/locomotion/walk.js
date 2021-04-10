@@ -7,9 +7,11 @@ export default function ({ platform, camera, rig }) {
   let playerVelocity = new THREE.Vector3(0, 0, 0)
 
   const desktopKeyboardState = {}
+  if (platform.type == "desktop" || platform.type == "mobile") {
+    camera.rotation.order = "YXZ"
+  }
   if (platform.type == "desktop") {
     document.body.requestPointerLock()
-    camera.rotation.order = "YXZ"
 
     document.body.addEventListener(
       "mousemove",
@@ -31,7 +33,7 @@ export default function ({ platform, camera, rig }) {
 
   function getForwardVector() {
     const direction = new THREE.Vector3()
-    if (platform.type == "desktop") {
+    if (platform.type == "desktop" || platform.type == "mobile") {
       camera.getWorldDirection(direction)
       direction.y = 0
     }
@@ -58,6 +60,11 @@ export default function ({ platform, camera, rig }) {
       }
 
       if (platform.type == "mobile") {
+        forwardValue = inputSystem.getMobileJoysticksValue().left.y
+        sideValue = inputSystem.getMobileJoysticksValue().left.x
+
+        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
+        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
       }
 
       if (platform.type == "vr") {

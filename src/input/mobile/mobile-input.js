@@ -175,7 +175,9 @@ function createJoystick(side) {
 
 export async function initMobileInput() {
   if (!location.href.includes("localhost")) {
-    document.documentElement.requestFullscreen()
+    if (!userAgent.match(/iPad/i) && !userAgent.match(/iPhone/i)) {
+      document.documentElement.requestFullscreen()
+    }
   }
 
   htmlContainer = document.createElement("div")

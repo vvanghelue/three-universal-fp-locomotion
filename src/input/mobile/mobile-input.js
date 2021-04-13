@@ -223,8 +223,9 @@ export function getMobileJoysticksValue() {
   }
 }
 
-const style = document.createElement("style")
-style.innerHTML = `
+if (window) {
+  const style = document.createElement("style")
+  style.innerHTML = `
     .virtual-joysticks {
         position: fixed;
         left: 0;
@@ -282,4 +283,5 @@ style.innerHTML = `
         opacity: 1;
     }
 `
-document.head.appendChild(style)
+  document.head.appendChild(style)
+}

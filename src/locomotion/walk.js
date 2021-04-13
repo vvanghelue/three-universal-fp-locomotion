@@ -6,12 +6,13 @@ const INERTIA_FACTOR = 0.7
 
 export default function ({ platform, camera, rig, rigVelocity, collisionSystem }) {
   const desktopKeyboardState = {}
+
   if (platform.type == "desktop" || platform.type == "mobile") {
     camera.rotation.order = "YXZ"
   }
+
   if (platform.type == "desktop") {
     document.body.requestPointerLock()
-
     document.body.addEventListener(
       "mousemove",
       (event) => {
@@ -49,7 +50,7 @@ export default function ({ platform, camera, rig, rigVelocity, collisionSystem }
     update(deltaTime) {
       if (platform.type == "mobile") {
         camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
-        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
+        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 50
       }
 
       if (!collisionSystem.isRigOnFloor()) {
@@ -67,12 +68,12 @@ export default function ({ platform, camera, rig, rigVelocity, collisionSystem }
         const left = keys["KeyA"] || keys["ArrowLeft"] ? -1 : 0
         forwardValue = forward + backward
         sideValue = left + right
-        sideValue = sideValue / 2
+        sideValue = sideValue / 1.5
       }
 
       if (platform.type == "mobile") {
-        forwardValue = inputSystem.getMobileJoysticksValue().left.y * 1.2
-        sideValue = inputSystem.getMobileJoysticksValue().left.x / 2
+        forwardValue = inputSystem.getMobileJoysticksValue().left.y
+        sideValue = inputSystem.getMobileJoysticksValue().left.x
 
         // camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
         // camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30

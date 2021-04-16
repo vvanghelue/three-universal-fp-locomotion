@@ -66,7 +66,8 @@ export function initCollisions({ platform, collisionObjects, rig }) {
       rigOnFloor = false
       const result = worldOctree.capsuleIntersect(bodyCapsule)
       if (result) {
-        rigOnFloor = result.normal.y > 0
+        window.debug = result.normal.y
+        rigOnFloor = result.normal.y > .3
         const vector = result.normal.multiplyScalar(result.depth)
         rig.position.add(vector)
       }

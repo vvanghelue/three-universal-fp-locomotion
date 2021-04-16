@@ -50,7 +50,7 @@ export function initLocomotion({ platform, overlay, camera, rig }) {
         if (climbingVRSystem && climbingVRSystem.isClimbing() === true) {
           return
         }
-        if (flyingVRSystem && flyingVRSystem.isFlying() === false) {
+        if (!flyingVRSystem || flyingVRSystem.isFlying() === false) {
           rigVelocity.y -= GRAVITY_FACTOR * deltaTime
 
           const horizontalDamping = Math.exp(-0.5 * deltaTime)

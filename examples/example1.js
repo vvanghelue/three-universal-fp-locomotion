@@ -23,7 +23,6 @@ function addStartButton(onStart) {
     })
 }
 
-
 let scene, camera, renderer, locomotion
 
 window.openExample1 = () => {
@@ -91,21 +90,26 @@ window.openExample1 = () => {
 
             // init locomotion
             const locomotion = await fpLcomotion({
-                collisionObject: gltf.scene, // collision meshes,
+                collisionObjects: [gltf.scene], // collision meshes,
                 renderer,
                 camera,
                 rig,
             })
             
             const clock = new THREE.Clock()
+            // let i = 0
             renderer.setAnimationLoop(function () {
+                    
+                
             // setInterval(() => {
                 //console.log(clock)
-                const deltaTime = clock.getDelta() // in seconds
-                window.deltaTime = deltaTime
-                locomotion.update(deltaTime)
+                // if (i%3 == 0) {
+                    const deltaTime = clock.getDelta() // in seconds
+                    locomotion.update(deltaTime)
+                // }
+                // i++
                 renderer.render(scene, camera)
-            //}, 1000/5)
+            // }, 1000/20)
             })
 
             window.renderer1 = renderer

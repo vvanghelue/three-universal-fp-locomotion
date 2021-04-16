@@ -232,7 +232,7 @@ if (window) {
         bottom: 0;
     }
     .virtual-joysticks .joystick-zone {
-        background: rgba(0, 255, 0, .3);
+        __background: rgba(0, 255, 0, .3);
         position: fixed;
         bottom: 10px;
         width: calc(35vw - 30px);

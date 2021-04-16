@@ -1,6 +1,6 @@
 import * as THREE from "three"
-import initCollisions from "./collisions/collisions"
-import initLocomotion from "./locomotion/_locomotion"
+import { initCollisions, collisionSystem } from "./collisions/collisions"
+import { initLocomotion, locomotionSystem } from "./locomotion/_locomotion"
 import deepMerge from "deepmerge"
 import { initUiOverlay, uiOverlay } from "./ui-overlay/ui-overlay"
 import { initInputSystem, inputSystem } from "./input/input-system"
@@ -56,7 +56,7 @@ const defaultOptions = {
         run: {
           enabled: true,
         },
-        "snap-turn": {
+        "snap-turn-vr": {
           enabled: true,
           step: Math.PI / 8,
         },
@@ -64,10 +64,10 @@ const defaultOptions = {
           enabled: true,
           bind: ["oculus-quest-button-A", "valve-index-A-button"], // (device) => device === "oculus-quest" ? "A" : null
         },
-        climb: {
+        "climb-vr": {
           enabled: true,
         },
-        fly: {
+        "fly-vr": {
           enabled: true,
         },
       },
@@ -92,7 +92,7 @@ const defaultOptions = {
 }
 
 export default async function (options) {
-  let collisionSystem, locomotionSystem, overlay
+  let overlay
 
   if (!platformType) {
     throw new Error(
@@ -100,13 +100,9 @@ export default async function (options) {
     )
   }
 
-  // initUiOverlay()
-  // console.log("uiOverlay", uiOverlay)
-  // uiOverlay.innerHTML = "<button>dsqdsq</button>"
-
   // prevent object traverse in deep merge
-  const collisionObject = options.collisionObject
-  options.collisionObject = undefined
+  const collisionObjects = options.collisionObjects
+  options.collisionObjects = undefined
   // prevent object traverse in deep merge
   const rig = options.rig
   options.rig = undefined
@@ -141,8 +137,8 @@ export default async function (options) {
     //inputSystem.getMobileJoysticksValue()
   }
 
-  collisionSystem = initCollisions({ platform, collisionObject, rig })
-  locomotionSystem = initLocomotion({ platform, overlay, camera, rig, collisionSystem })
+  initCollisions({ platform, collisionObjects, rig })
+  initLocomotion({ platform, overlay, camera, rig })
 
   // await new Promise(r => setTimeout(r, 4000))
   return {

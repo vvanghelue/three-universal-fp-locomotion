@@ -1,14 +1,29 @@
 import { inputSystem } from "../input/input-system"
+import { collisionSystem } from "../collisions/collisions"
 import * as THREE from "three"
 
 const SPEED = 5
 const INERTIA_FACTOR = 0.7
 
-export default function ({ platform, camera, rig, rigVelocity, collisionSystem }) {
+export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
   const desktopKeyboardState = {}
+  const eulerAngle = new THREE.Euler(0, 0, 0, "YXZ")
+  const minPolarAngle = 0
+  const maxPolarAngle = Math.PI
 
   if (platform.type == "desktop" || platform.type == "mobile") {
-    camera.rotation.order = "YXZ"
+    //camera.rotation.order = "YXZ"
+  }
+
+  function rotateCamera({ deltaX, deltaY }) {
+    eulerAngle.setFromQuaternion(camera.quaternion)
+    eulerAngle.y -= deltaX
+    eulerAngle.x -= deltaY
+    eulerAngle.x = Math.max(
+      Math.PI / 2 - maxPolarAngle,
+      Math.min(Math.PI / 2 - minPolarAngle, eulerAngle.x)
+    )
+    camera.quaternion.setFromEuler(eulerAngle)
   }
 
   if (platform.type == "desktop") {
@@ -17,8 +32,9 @@ export default function ({ platform, camera, rig, rigVelocity, collisionSystem }
       "mousemove",
       (event) => {
         if (document.pointerLockElement === document.body) {
-          camera.rotation.y -= event.movementX / 500
-          camera.rotation.x -= -event.movementY / 500
+          // camera.rotation.y -= event.movementX / 500
+          // camera.rotation.x -= -event.movementY / 500
+          rotateCamera({ deltaX: event.movementX * 0.002, deltaY: event.movementY * 0.002 })
         }
       },
       false
@@ -46,11 +62,13 @@ export default function ({ platform, camera, rig, rigVelocity, collisionSystem }
     return direction
   }
 
-  return {
+  walkingSystem = {
     update(deltaTime) {
       if (platform.type == "mobile") {
-        camera.rotation.y -= inputSystem.getMobileJoysticksValue().right.x / 30
-        camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 50
+        rotateCamera({
+          deltaX: inputSystem.getMobileJoysticksValue().right.x / 30,
+          deltaY: (-1 * inputSystem.getMobileJoysticksValue().right.y) / 50,
+        })
       }
 
       if (!collisionSystem.isRigOnFloor()) {
@@ -98,5 +116,14 @@ export default function ({ platform, camera, rig, rigVelocity, collisionSystem }
       // rigVelocity.addScaledVector(rigVelocity, damping)
       rigVelocity.multiplyScalar(INERTIA_FACTOR)
     },
+    isWalking() {
+      return (
+        collisionSystem.isRigOnFloor() &&
+        Math.abs(rigVelocity.x) + Math.abs(rigVelocity.y) + Math.abs(rigVelocity.z) > 0.05
+      )
+    },
   }
+  window.walkingSystem = walkingSystem
 }
+
+export let walkingSystem

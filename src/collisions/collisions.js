@@ -6,7 +6,9 @@ import { Capsule } from "three/examples/jsm/math/Capsule.js"
 // Collision system with world octree and body capsule
 // 99.99 % inspired by https://threejs.org/examples/?q=fps#games_fps
 
-export default function initCollisions({ platform, collisionObject, rig }) {
+export let collisionSystem
+
+export function initCollisions({ platform, collisionObjects, rig }) {
   // console.log('platform', platform)
   const DEFAULT_BODY_HEIGHT = 1.7
   const DEFAULT_BODY_RADIUS = 0.35
@@ -14,14 +16,20 @@ export default function initCollisions({ platform, collisionObject, rig }) {
   let rigOnFloor = true
 
   let worldOctree = new Octree()
-  worldOctree.fromGraphNode(collisionObject)
+
+  for (const object of collisionObjects) {
+    worldOctree.fromGraphNode(object)
+  }
 
   const bodyCapsule = new Capsule()
   // new THREE.Vector3(0, DEFAULT_BODY_RADIUS, 0),
   // new THREE.Vector3(0, DEFAULT_BODY_RADIUS - DEFAULT_BODY_RADIUS, 0),
   // DEFAULT_BODY_RADIUS
 
-  return {
+  collisionSystem = {
+    sphereIntersect(sphere) {
+      return worldOctree.sphereIntersect(sphere)
+    },
     isRigOnFloor() {
       return rigOnFloor
     },

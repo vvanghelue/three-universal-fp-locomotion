@@ -4,6 +4,7 @@ import {
   getXRControllers,
   getXRGamepads,
   getXRCamera,
+  getXRGamepadButtonValue,
 } from "./xr/xr-input"
 
 import { initMobileInput, getMobileJoysticksValue } from "./mobile/mobile-input"
@@ -34,6 +35,7 @@ export const inputSystem = (window.inputSystem = {
   getXRGamepads,
   getXRSession,
   getXRCamera,
+  getXRGamepadButtonValue,
   // mobile
   initMobileInput,
   getMobileJoysticksValue,

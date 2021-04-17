@@ -3,7 +3,10 @@ import { inputSystem } from "../input/input-system"
 import { collisionSystem } from "../collisions/collisions"
 import { locomotionSystem } from "../locomotion/_locomotion"
 
-export function initClimbingVRSystem({ rig }) {
+export function initClimbingVRSystem({ platformType, rig }) {
+  if (platformType != "vr") {
+    return
+  }
   // used to compute velocity when detaching hands from walls
   const lastBodyPositions = []
   let climbingState = {
@@ -16,7 +19,7 @@ export function initClimbingVRSystem({ rig }) {
   }
   const xrHands = inputSystem.getXRControllers()
 
-  climbingVRSystem = {
+  return (climbingVRSystem = {
     update(deltaTime) {
       const rigVelocity = locomotionSystem.getRigVelocity()
 
@@ -97,7 +100,7 @@ export function initClimbingVRSystem({ rig }) {
     isClimbing() {
       return false
     },
-  }
+  })
 }
 
 export let climbingVRSystem

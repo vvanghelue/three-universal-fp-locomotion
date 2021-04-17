@@ -1,6 +1,7 @@
-import fpLcomotion from '../src/index'
+import fpLcomotion, { walk, snapTurnVR, climbVR, flyVR } from '../src/index'
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import * as THREE from "three"
+import { snapTurnVRSystem } from '../src/locomotion/snap-turn-vr'
 
 function addStartButton(onStart) {
     document.body.innerHTML = ""
@@ -94,6 +95,12 @@ window.openExample1 = () => {
                 renderer,
                 camera,
                 rig,
+                features: [
+                    walk({ speedFactor: 1.5 }),
+                    snapTurnVR(),
+                    climbVR(),
+                    flyVR()
+                ]
             })
             
             const clock = new THREE.Clock()

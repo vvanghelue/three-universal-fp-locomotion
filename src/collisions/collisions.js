@@ -8,8 +8,7 @@ import { Capsule } from "three/examples/jsm/math/Capsule.js"
 
 export let collisionSystem
 
-export function initCollisions({ platform, collisionObjects, rig }) {
-  // console.log('platform', platform)
+export function initCollisions({ platformType, collisionObjects, rig }) {
   const DEFAULT_BODY_HEIGHT = 1.7
   const DEFAULT_BODY_RADIUS = 0.35
 
@@ -22,9 +21,6 @@ export function initCollisions({ platform, collisionObjects, rig }) {
   }
 
   const bodyCapsule = new Capsule()
-  // new THREE.Vector3(0, DEFAULT_BODY_RADIUS, 0),
-  // new THREE.Vector3(0, DEFAULT_BODY_RADIUS - DEFAULT_BODY_RADIUS, 0),
-  // DEFAULT_BODY_RADIUS
 
   collisionSystem = {
     sphereIntersect(sphere) {
@@ -34,7 +30,7 @@ export function initCollisions({ platform, collisionObjects, rig }) {
       return rigOnFloor
     },
     update(dt) {
-      if (platform.type == "desktop" || platform.type == "mobile") {
+      if (platformType == "desktop" || platformType == "mobile") {
         bodyCapsule.set(
           new THREE.Vector3(rig.position.x, rig.position.y + DEFAULT_BODY_RADIUS, rig.position.z),
           new THREE.Vector3(
@@ -44,9 +40,9 @@ export function initCollisions({ platform, collisionObjects, rig }) {
           ),
           DEFAULT_BODY_RADIUS
         )
-      } // END if (platform.type == "desktop" ...
+      } // END if "desktop"
 
-      if (platform.type == "vr") {
+      if (platformType == "vr") {
         const cameraPosition = inputSystem.getXRCamera().position
         bodyCapsule.set(
           new THREE.Vector3(
@@ -67,7 +63,7 @@ export function initCollisions({ platform, collisionObjects, rig }) {
       const result = worldOctree.capsuleIntersect(bodyCapsule)
       if (result) {
         window.debug = result.normal.y
-        rigOnFloor = result.normal.y > .3
+        rigOnFloor = result.normal.y > 0.3
         const vector = result.normal.multiplyScalar(result.depth)
         rig.position.add(vector)
       }

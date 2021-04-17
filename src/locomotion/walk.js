@@ -1,18 +1,19 @@
 import { inputSystem } from "../input/input-system"
 import { collisionSystem } from "../collisions/collisions"
+import { locomotionSystem } from "../locomotion/_locomotion"
 import * as THREE from "three"
 
 const SPEED = 5
 const INERTIA_FACTOR = 0.7
 
-export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
+export function initWalkingSystem({ platformType, rig, speedFactor = 1 }) {
   const desktopKeyboardState = {}
   const eulerAngle = new THREE.Euler(0, 0, 0, "YXZ")
   const minPolarAngle = 0
   const maxPolarAngle = Math.PI
 
-  if (platform.type == "desktop" || platform.type == "mobile") {
-    //camera.rotation.order = "YXZ"
+  if (platformType == "desktop" || platformType == "mobile") {
+    //locomotionSystem.getCamera().rotation.order = "YXZ"
   }
 
   function rotateCamera({ deltaX, deltaY }) {
@@ -23,10 +24,10 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
       Math.PI / 2 - maxPolarAngle,
       Math.min(Math.PI / 2 - minPolarAngle, eulerAngle.x)
     )
-    camera.quaternion.setFromEuler(eulerAngle)
+    locomotionSystem.getCamera().quaternion.setFromEuler(eulerAngle)
   }
 
-  if (platform.type == "desktop") {
+  if (platformType == "desktop") {
     document.body.requestPointerLock()
     document.body.addEventListener(
       "mousemove",
@@ -43,17 +44,17 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
 
   function getSideVector() {
     const direction = getForwardVector(camera)
-    direction.cross(camera.up)
+    direction.cross(locomotionSystem.getCamera().up)
     return direction
   }
 
   function getForwardVector() {
     const direction = new THREE.Vector3()
-    if (platform.type == "desktop" || platform.type == "mobile") {
-      camera.getWorldDirection(direction)
+    if (platformType == "desktop" || platformType == "mobile") {
+      locomotionSystem.getCamera().getWorldDirection(direction)
       direction.y = 0
     }
-    if (platform.type == "vr") {
+    if (platformType == "vr") {
       inputSystem.getXRControllers().left.mesh.parent.getWorldDirection(direction)
       direction.multiplyScalar(-1)
       direction.y = 0
@@ -62,9 +63,10 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
     return direction
   }
 
-  walkingSystem = {
+  return (walkingSystem = {
     update(deltaTime) {
-      if (platform.type == "mobile") {
+      const rigVelocity = locomotionSystem.getRigVelocity()
+      if (platformType == "mobile") {
         rotateCamera({
           deltaX: inputSystem.getMobileJoysticksValue().right.x / 30,
           deltaY: (-1 * inputSystem.getMobileJoysticksValue().right.y) / 50,
@@ -78,7 +80,7 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
       let forwardValue = 0
       let sideValue = 0
 
-      if (platform.type == "desktop") {
+      if (platformType == "desktop") {
         const keys = inputSystem.getKeyboardState()
         const forward = keys["KeyW"] || keys["ArrowUp"] ? 1 : 0
         const backward = keys["KeyS"] || keys["ArrowDown"] ? -1 : 0
@@ -89,7 +91,7 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
         sideValue = sideValue / 1.5
       }
 
-      if (platform.type == "mobile") {
+      if (platformType == "mobile") {
         forwardValue = inputSystem.getMobileJoysticksValue().left.y
         sideValue = inputSystem.getMobileJoysticksValue().left.x
 
@@ -97,17 +99,17 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
         // camera.rotation.x -= inputSystem.getMobileJoysticksValue().right.y / 30
       }
 
-      if (platform.type == "vr") {
+      if (platformType == "vr") {
         forwardValue = inputSystem.getXRGamepads().left.gamepad.axes[3] * -1
         sideValue = inputSystem.getXRGamepads().left.gamepad.axes[2]
       }
 
       const deltaPosition = new THREE.Vector3(0, 0, 0)
       deltaPosition
-        .add(getForwardVector(camera).multiplyScalar(forwardValue))
-        .add(getSideVector(camera).multiplyScalar(sideValue))
+        .add(getForwardVector().multiplyScalar(forwardValue))
+        .add(getSideVector().multiplyScalar(sideValue))
         // .normalize()
-        .multiplyScalar(SPEED * platform.features.walk.speedFactor)
+        .multiplyScalar(SPEED * speedFactor)
       rigVelocity.add(deltaPosition)
 
       // rigVelocity.copy(deltaPosition)
@@ -122,7 +124,7 @@ export function initWalkingSystem({ platform, camera, rig, rigVelocity }) {
         Math.abs(rigVelocity.x) + Math.abs(rigVelocity.y) + Math.abs(rigVelocity.z) > 0.05
       )
     },
-  }
+  })
   window.walkingSystem = walkingSystem
 }
 

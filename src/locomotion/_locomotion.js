@@ -1,42 +1,29 @@
 import * as THREE from "three"
 import { collisionSystem } from "../collisions/collisions"
-import { initWalkingSystem, walkingSystem } from "./walk"
-import { initSnapTurnVRSystem, snapTurnVRSystem } from "./snap-turn-vr"
+
 import { initClimbingVRSystem, climbingVRSystem } from "./climb-vr"
 import { initFlyingVRSystem, flyingVRSystem } from "./fly-vr"
-// import { collisionSystem } from "../collisions/collisions"
 
-// import initClimbingSystem from "./climb"
-// import initFlyingSystem from "./fly"
-
-const GRAVITY_FACTOR = 8
+const GRAVITY_FACTOR = 9.81
 
 export let locomotionSystem
 
-export function initLocomotion({ platform, overlay, camera, rig }) {
+export function initLocomotion({ platformType, features, overlay, camera, rig }) {
   window.collisionSystem = collisionSystem
   let rigVelocity = (window.rigVelocity = new THREE.Vector3(0, 0, 0))
-  // console.log(platform)
 
   const systems = []
-  if (platform.isEnabled("walk")) {
-    initWalkingSystem({ platform, camera, rig, rigVelocity })
-    systems.push(walkingSystem)
-  }
-  if (platform.isEnabled("snap-turn-vr")) {
-    initSnapTurnVRSystem({ rig })
-    systems.push(snapTurnVRSystem)
-  }
-  if (platform.isEnabled("climb-vr")) {
-    initClimbingVRSystem({ rig })
-    systems.push(climbingVRSystem)
-  }
-  if (platform.isEnabled("fly-vr")) {
-    initFlyingVRSystem({ rig })
-    systems.push(flyingVRSystem)
+  for (const feature of features) {
+    const system = feature({ platformType, camera, rig })
+    if (system) {
+      systems.push(system)
+    }
   }
 
   locomotionSystem = {
+    getCamera() {
+      return camera
+    },
     getRigVelocity() {
       return rigVelocity
     },
@@ -46,17 +33,17 @@ export function initLocomotion({ platform, overlay, camera, rig }) {
       }
 
       // gravity
-      if (!collisionSystem.isRigOnFloor()) {
-        if (climbingVRSystem && climbingVRSystem.isClimbing() === true) {
-          return
-        }
-        if (!flyingVRSystem || flyingVRSystem.isFlying() === false) {
-          rigVelocity.y -= GRAVITY_FACTOR * deltaTime
-
-          const horizontalDamping = Math.exp(-0.5 * deltaTime)
-          rigVelocity.x = rigVelocity.x * horizontalDamping
-          rigVelocity.z = rigVelocity.z * horizontalDamping
-        }
+      if (collisionSystem.isRigOnFloor()) {
+        // continue
+      } else if (climbingVRSystem && climbingVRSystem.isClimbing() === true) {
+        return
+      } else if (flyingVRSystem && flyingVRSystem.isFlying() === true) {
+        // continue
+      } else {
+        rigVelocity.y -= GRAVITY_FACTOR * deltaTime
+        const horizontalDamping = Math.exp(-0.5 * deltaTime)
+        rigVelocity.x = rigVelocity.x * horizontalDamping
+        rigVelocity.z = rigVelocity.z * horizontalDamping
       }
 
       // update position from velocity vector

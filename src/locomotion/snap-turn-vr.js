@@ -1,10 +1,13 @@
 import { inputSystem } from "../input/input-system"
 import rotateAboutPoint from "../_helpers/rotate-about-point"
 
-export function initSnapTurnVRSystem({ rig }) {
+export function initSnapTurnVRSystem({ platformType, rig }) {
+  if (platformType != "vr") {
+    return
+  }
   let lastXRSnapTurnTime = 0
 
-  snapTurnVRSystem = {
+  return (snapTurnVRSystem = {
     update(deltaTime) {
       if (new Date().getTime() - lastXRSnapTurnTime > 200) {
         const gamepads = inputSystem.getXRGamepads()
@@ -22,7 +25,7 @@ export function initSnapTurnVRSystem({ rig }) {
         }
       }
     },
-  }
+  })
 }
 
 export let snapTurnVRSystem

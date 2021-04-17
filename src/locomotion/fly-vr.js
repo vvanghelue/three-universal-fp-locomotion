@@ -5,7 +5,11 @@ import { collisionSystem } from "../collisions/collisions"
 
 export let flyingVRSystem
 
-export function initFlyingVRSystem({ rig }) {
+export function initFlyingVRSystem({ platformType, rig }) {
+  if (platformType != "vr") {
+    return
+  }
+
   let canFly = false
 
   function getFlyingForwardVector() {
@@ -37,7 +41,7 @@ export function initFlyingVRSystem({ rig }) {
     return distanceOk && angleOk
   }
 
-  flyingVRSystem = window.flyingVRSystem = {
+  return (flyingVRSystem = window.flyingVRSystem = {
     isFlying() {
       return canFly
     },
@@ -60,5 +64,5 @@ export function initFlyingVRSystem({ rig }) {
       //   const damping = Math.exp(-25 * deltaTime) - 1
       //   playerVelocity.addScaledVector(playerVelocity, damping)
     },
-  }
+  })
 }

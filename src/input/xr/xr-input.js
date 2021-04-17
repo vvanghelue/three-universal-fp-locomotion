@@ -2,6 +2,9 @@ import * as THREE from "three"
 import { inputSystem } from "../input-system"
 import waitUntil from "../../_helpers/wait-until"
 import { Camera } from "three"
+import handsModel from "./hand-models/hands.json"
+
+const handModelGroup = new THREE.ObjectLoader().parse(handsModel)
 
 let originalCamera
 let XRSession
@@ -10,6 +13,7 @@ let controllers = {}
 export function getXRControllers() {
   return controllers
 }
+
 
 export function getXRSession() {
   return XRSession
@@ -23,6 +27,12 @@ async function buildController(data) {
   let geometry, material
 
   if (data.targetRayMode == "tracked-pointer") {
+    if (data.handedness === "left") {
+      return handModelGroup.getChildByName('left')
+    }
+    if (data.handedness === "right") {
+      return handModelGroup.getChildByName('right')
+    }
     geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32) //.translate(0, 0, -1)
     material = new THREE.MeshBasicMaterial({
       opacity: 0.5,
@@ -69,9 +79,6 @@ export async function initXRSession({ renderer, rig, camera }) {
   })
   renderer.xr.setSession(XRSession)
 
-  // PLAYER HEIGHT
-  // console.log(renderer.xr.getCamera(camera).position.y)
-
   for (const index of [0, 1]) {
     const controller = renderer.xr.getController(index)
     controller.addEventListener("connected", async function (event) {
@@ -84,6 +91,7 @@ export async function initXRSession({ renderer, rig, camera }) {
       this.add(mesh)
     })
     controller.addEventListener("disconnected", function () {
+      console.log('gamepad disconected...')
       this.remove(this.children[0])
     })
     rig.add(controller)

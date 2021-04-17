@@ -1,4 +1,4 @@
-import fpLcomotion, { walk, snapTurnVR, climbVR, flyVR } from '../src/index'
+import universalLocomotion, { walk, snapTurnVR, climbVR, flyVR } from '../src/index'
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import * as THREE from "three"
 import { snapTurnVRSystem } from '../src/locomotion/snap-turn-vr'
@@ -90,7 +90,7 @@ window.openExample1 = () => {
             scene.add(gltf.scene)
 
             // init locomotion
-            const locomotion = await fpLcomotion({
+            const locomotion = await universalLocomotion({
                 collisionObjects: [gltf.scene], // collision meshes,
                 renderer,
                 camera,

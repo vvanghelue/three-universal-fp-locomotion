@@ -14,7 +14,6 @@ export function getXRControllers() {
   return controllers
 }
 
-
 export function getXRSession() {
   return XRSession
 }
@@ -28,10 +27,10 @@ async function buildController(data) {
 
   if (data.targetRayMode == "tracked-pointer") {
     if (data.handedness === "left") {
-      return handModelGroup.getChildByName('left')
+      return handModelGroup.getChildByName("left")
     }
     if (data.handedness === "right") {
-      return handModelGroup.getChildByName('right')
+      return handModelGroup.getChildByName("right")
     }
     geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32) //.translate(0, 0, -1)
     material = new THREE.MeshBasicMaterial({
@@ -91,7 +90,7 @@ export async function initXRSession({ renderer, rig, camera }) {
       this.add(mesh)
     })
     controller.addEventListener("disconnected", function () {
-      console.log('gamepad disconected...')
+      console.log("gamepad disconected...")
       this.remove(this.children[0])
     })
     rig.add(controller)

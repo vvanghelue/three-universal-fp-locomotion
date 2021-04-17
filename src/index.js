@@ -1,14 +1,15 @@
 import * as THREE from "three"
 import { initCollisions, collisionSystem } from "./collisions/collisions"
-import { initLocomotion, locomotionSystem } from "./locomotion/_locomotion"
+import { initLocomotion, locomotionSystem } from "./locomotion/locomotion"
 import deepMerge from "deepmerge"
 import { initUiOverlay, uiOverlay } from "./ui-overlay/ui-overlay"
 import { initInputSystem, inputSystem } from "./input/input-system"
 
-import { initWalkingSystem, walkingSystem } from "./locomotion/walk"
-import { initSnapTurnVRSystem, snapTurnVRSystem } from "./locomotion/snap-turn-vr"
-import { initClimbingVRSystem, climbingVRSystem } from "./locomotion/climb-vr"
-import { initFlyingVRSystem, flyingVRSystem } from "./locomotion/fly-vr"
+import { initWalkingSystem, walkingSystem } from "./locomotion/systems/walk/walk"
+import { initSnapTurnVRSystem, snapTurnVRSystem } from "./locomotion/systems/snap-turn-vr/snap-turn-vr"
+import { initClimbingVRSystem, climbingVRSystem } from "./locomotion/systems/climb-vr/climb-vr"
+import { initFlyingVRSystem, flyingVRSystem } from "./locomotion/systems/fly-vr/fly-vr"
+import { initTeleportVRSystem, teleportVRSystem } from "./locomotion/systems/teleport-vr/teleport-vr"
 
 // detect context before loading
 let platformType // 'vr', 'desktop', 'mobile'
@@ -33,7 +34,7 @@ if (window) {
   })()
 }
 
-export default async function ({ collisionObjects, rig, camera, renderer, features }) {
+export default async function ({ collisionObjects, scene, rig, camera, renderer, features }) {
   let overlay
 
   if (!platformType) {
@@ -59,7 +60,7 @@ export default async function ({ collisionObjects, rig, camera, renderer, featur
   }
 
   initCollisions({ platformType, collisionObjects, rig })
-  initLocomotion({ platformType, features, overlay, camera, rig })
+  initLocomotion({ platformType, features, overlay, camera, rig, scene })
 
   // await new Promise(r => setTimeout(r, 4000))
   return {
@@ -74,22 +75,27 @@ export default async function ({ collisionObjects, rig, camera, renderer, featur
 }
 
 export function walk(options) {
-  return function ({ rig, camera, platformType }) {
-    return initWalkingSystem({ ...options, rig, camera, platformType })
+  return function ({ rig, camera, platformType, scene }) {
+    return initWalkingSystem({ ...options, rig, camera, platformType, scene })
   }
 }
 export function snapTurnVR(options) {
-  return function ({ rig, camera, platformType }) {
-    return initSnapTurnVRSystem({ ...options, rig, camera, platformType })
+  return function ({ rig, camera, platformType, scene }) {
+    return initSnapTurnVRSystem({ ...options, rig, camera, platformType, scene })
   }
 }
 export function climbVR(options) {
-  return function ({ rig, camera, platformType }) {
-    return initClimbingVRSystem({ ...options, rig, camera, platformType })
+  return function ({ rig, camera, platformType, scene }) {
+    return initClimbingVRSystem({ ...options, rig, camera, platformType, scene })
   }
 }
 export function flyVR(options) {
-  return function ({ rig, camera, platformType }) {
-    return initFlyingVRSystem({ ...options, rig, camera, platformType })
+  return function ({ rig, camera, platformType, scene }) {
+    return initFlyingVRSystem({ ...options, rig, camera, platformType, scene })
+  }
+}
+export function teleportVR(options) {
+  return function ({ rig, camera, platformType, scene }) {
+    return initTeleportVRSystem({ ...options, rig, camera, platformType, scene })
   }
 }

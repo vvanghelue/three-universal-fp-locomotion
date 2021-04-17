@@ -1,7 +1,7 @@
 import * as THREE from "three"
-import { inputSystem } from "../input/input-system"
-import { locomotionSystem } from "../locomotion/_locomotion"
-import { collisionSystem } from "../collisions/collisions"
+import { inputSystem } from "../../../input/input-system"
+import { locomotionSystem } from "../../../locomotion/locomotion"
+import { collisionSystem } from "../../../collisions/collisions"
 
 export let flyingVRSystem
 

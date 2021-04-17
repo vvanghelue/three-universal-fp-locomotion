@@ -1,7 +1,6 @@
-import universalLocomotion, { walk, snapTurnVR, climbVR, flyVR } from '../src/index'
+import universalLocomotion, { walk, snapTurnVR, climbVR, flyVR, teleportVR } from '../src/index'
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 import * as THREE from "three"
-import { snapTurnVRSystem } from '../src/locomotion/snap-turn-vr'
 
 function addStartButton(onStart) {
     document.body.innerHTML = ""
@@ -92,11 +91,13 @@ window.openExample1 = () => {
             // init locomotion
             const locomotion = await universalLocomotion({
                 collisionObjects: [gltf.scene], // collision meshes,
+                scene,
                 renderer,
                 camera,
                 rig,
                 features: [
-                    walk({ speedFactor: 1.5 }),
+                    walk({ speedFactor: 1 }),
+                    // teleportVR(),
                     snapTurnVR(),
                     climbVR(),
                     flyVR()

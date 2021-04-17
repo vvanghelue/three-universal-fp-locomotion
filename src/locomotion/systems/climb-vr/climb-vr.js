@@ -1,7 +1,7 @@
 import * as THREE from "three"
-import { inputSystem } from "../input/input-system"
-import { collisionSystem } from "../collisions/collisions"
-import { locomotionSystem } from "../locomotion/_locomotion"
+import { inputSystem } from "../../../input/input-system"
+import { collisionSystem } from "../../../collisions/collisions"
+import { locomotionSystem } from "../../locomotion"
 
 export function initClimbingVRSystem({ platformType, rig }) {
   if (platformType != "vr") {

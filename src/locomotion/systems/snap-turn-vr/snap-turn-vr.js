@@ -1,5 +1,5 @@
-import { inputSystem } from "../input/input-system"
-import rotateAboutPoint from "../_helpers/rotate-about-point"
+import { inputSystem } from "../../../input/input-system"
+import rotateAboutPoint from "../../../_helpers/rotate-about-point"
 
 export function initSnapTurnVRSystem({ platformType, rig }) {
   if (platformType != "vr") {

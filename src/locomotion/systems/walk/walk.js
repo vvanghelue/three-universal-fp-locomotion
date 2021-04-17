@@ -1,9 +1,9 @@
-import { inputSystem } from "../input/input-system"
-import { collisionSystem } from "../collisions/collisions"
-import { locomotionSystem } from "../locomotion/_locomotion"
+import { inputSystem } from "../../../input/input-system"
+import { collisionSystem } from "../../../collisions/collisions"
+import { locomotionSystem } from "../../locomotion"
 import * as THREE from "three"
 
-const SPEED = 5
+const SPEED = 3
 const INERTIA_FACTOR = 0.7
 
 export function initWalkingSystem({ platformType, rig, speedFactor = 1 }) {

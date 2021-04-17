@@ -1,20 +1,20 @@
 import * as THREE from "three"
 import { collisionSystem } from "../collisions/collisions"
 
-import { initClimbingVRSystem, climbingVRSystem } from "./climb-vr"
-import { initFlyingVRSystem, flyingVRSystem } from "./fly-vr"
+import { initClimbingVRSystem, climbingVRSystem } from "./systems/climb-vr/climb-vr"
+import { initFlyingVRSystem, flyingVRSystem } from "./systems/fly-vr/fly-vr"
 
 const GRAVITY_FACTOR = 9.81
 
 export let locomotionSystem
 
-export function initLocomotion({ platformType, features, overlay, camera, rig }) {
+export function initLocomotion({ platformType, features, overlay, camera, rig, scene }) {
   window.collisionSystem = collisionSystem
   let rigVelocity = (window.rigVelocity = new THREE.Vector3(0, 0, 0))
 
   const systems = []
   for (const feature of features) {
-    const system = feature({ platformType, camera, rig })
+    const system = feature({ platformType, camera, rig, scene })
     if (system) {
       systems.push(system)
     }

@@ -78,13 +78,13 @@ export function initClimbingVRSystem({ platformType, rig }) {
         }
       }
 
-      for (const handName of ["left", "right"]) {
-        if (climbingState.grippedHand == handName) {
-          xrHands[handName].mesh.material.color.set(0xff1111)
-          continue
-        }
-        xrHands[handName].mesh.material.color.set(0x11ff11)
-      }
+      // for (const handName of ["left", "right"]) {
+      //   if (climbingState.grippedHand == handName) {
+      //     xrHands[handName].mesh.material.color.set(0xff1111)
+      //     continue
+      //   }
+      //   xrHands[handName].mesh.material.color.set(0x11ff11)
+      // }
 
       // when player relax grip, add inertia towards movement direction (allow player to fast climb a wall)
       if (climbingState.grippedHand === null && lastBodyPositions.length > 1) {
@@ -98,7 +98,7 @@ export function initClimbingVRSystem({ platformType, rig }) {
       }
     },
     isClimbing() {
-      return false
+      return climbingState.grippedHand !== null
     },
   })
 }

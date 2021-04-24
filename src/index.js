@@ -65,6 +65,9 @@ export default async function ({ collisionObjects, scene, rig, camera, renderer,
   // await new Promise(r => setTimeout(r, 4000))
   return {
     update(deltaTime) {
+      if (deltaTime > 1) {
+        deltaTime = 1
+      }
       // console.log(inputSystem.getKeyboardState())
       locomotionSystem.update(deltaTime)
       collisionSystem.update(deltaTime)

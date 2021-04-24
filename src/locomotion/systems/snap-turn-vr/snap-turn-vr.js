@@ -1,3 +1,4 @@
+import * as THREE from "three"
 import { inputSystem } from "../../../input/input-system"
 import rotateAboutPoint from "../../../_helpers/rotate-about-point"
 

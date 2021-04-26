@@ -34,7 +34,7 @@ if (window) {
   })()
 }
 
-export default async function ({ collisionObjects, scene, rig, camera, renderer, features }) {
+export default async function ({ collisionObjects, scene, rig, camera, renderer, features, onCollision }) {
   let overlay
 
   if (!platformType) {
@@ -59,7 +59,7 @@ export default async function ({ collisionObjects, scene, rig, camera, renderer,
     //inputSystem.getMobileJoysticksValue()
   }
 
-  initCollisions({ platformType, collisionObjects, rig })
+  initCollisions({ platformType, collisionObjects, rig, onCollision })
   initLocomotion({ platformType, features, overlay, camera, rig, scene })
 
   // await new Promise(r => setTimeout(r, 4000))

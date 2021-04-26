@@ -8,7 +8,7 @@ import { Capsule } from "three/examples/jsm/math/Capsule.js"
 
 export let collisionSystem
 
-export function initCollisions({ platformType, collisionObjects, rig }) {
+export function initCollisions({ platformType, collisionObjects, rig, onCollision }) {
   const DEFAULT_BODY_HEIGHT = 1.7
   const DEFAULT_BODY_RADIUS = 0.35
 
@@ -66,6 +66,7 @@ export function initCollisions({ platformType, collisionObjects, rig }) {
         rigOnFloor = result.normal.y > 0.3
         const vector = result.normal.multiplyScalar(result.depth)
         rig.position.add(vector)
+        onCollision ? onCollision({ result }) : null
       }
     },
   }

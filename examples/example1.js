@@ -101,7 +101,10 @@ window.openExample1 = () => {
                     snapTurnVR(),
                     climbVR(),
                     flyVR()
-                ]
+                ],
+                onCollision({ result }) {
+                    // console.log({ result })
+                }
             })
             
             const clock = new THREE.Clock()
